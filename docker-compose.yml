@@ -1,0 +1,40 @@
+version: '3.4'
+
+services:
+  api:
+    image: wemeet-api
+    build:
+      context: .
+      dockerfile: .
+      target: development
+    ports:
+      - 3000:3000
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+    restart: always
+    command: npm run start:dev
+    environment:
+      - DB_HOST=db
+      - DB_PORT=5432
+      - DB_USERNAME=postgres
+      - DB_PASSWORD=123123
+      - DB_DEFAULT=wemeet-nest
+      - JWT_SECRET=0917b13a9091915d54b6336f45909539cce452b3661b21f386418a257883b30a
+    depends_on:
+      - db
+
+  db:
+    image: postgres
+    container_name: nest-wemeetdb
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=123123
+      - POSTGRES_DB=wemeet-nest
+    restart: always
+    ports:
+      - 5432:5432
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+volumes:
+  postgres_data:
